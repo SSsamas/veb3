@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Файлы данных</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+</head>
+<body>
+<section class="section">
+  <div class="container">
+    {% for message in messages %}
+      <div class="notification {% if message.tags %}is-{{ message.tags }}{% endif %}">{{ message }}</div>
+    {% endfor %}
+
+    <h1 class="title">Файлы данных</h1>
+
+    <div class="columns">
+      <div class="column">
+        <h2 class="subtitle">JSON</h2>
+        {% if json_files %}
+          <ul>
+          {% for f in json_files %}
+            <li><a href="{% url 'sales:view_file' f %}">{{ f }}</a></li>
+          {% endfor %}
+          </ul>
+        {% else %}
+          <p>JSON файлы отсутствуют</p>
+        {% endif %}
+      </div>
+      <div class="column">
+        <h2 class="subtitle">XML</h2>
+        {% if xml_files %}
+          <ul>
+          {% for f in xml_files %}
+            <li><a href="{% url 'sales:view_file' f %}">{{ f }}</a></li>
+          {% endfor %}
+          </ul>
+        {% else %}
+          <p>XML файлы отсутствуют</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <a class="button" href="/">Назад</a>
+  </div>
+</section>
+</body>
+</html>
