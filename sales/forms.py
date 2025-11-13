@@ -8,6 +8,11 @@ FORMAT_CHOICES = (
     ('xml', 'XML'),
 )
 
+STORAGE_CHOICES = (
+    ('file', 'Файл (JSON/XML)'),
+    ('db', 'База данных (SQLite)'),
+)
+
 class SaleForm(forms.Form):
     order_id = forms.CharField(label='ID заказа', max_length=50)
     customer_name = forms.CharField(label='Имя клиента', max_length=100)
@@ -15,7 +20,14 @@ class SaleForm(forms.Form):
     quantity = forms.IntegerField(label='Количество', validators=[MinValueValidator(1)])
     price = forms.DecimalField(label='Цена за единицу', max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     date = forms.DateField(label='Дата покупки', widget=forms.DateInput(attrs={'type': 'date'}))
-    export_format = forms.ChoiceField(label='Формат сохранения', choices=FORMAT_CHOICES)
+    storage = forms.ChoiceField(label='Куда сохранять', choices=STORAGE_CHOICES, initial='file')
+    export_format = forms.ChoiceField(label='Формат сохранения (для файла)', choices=FORMAT_CHOICES, required=False)
+
+    def clean(self):
+        cleaned = super().clean()
+        if cleaned.get('storage') == 'file' and not cleaned.get('export_format'):
+            self.add_error('export_format', 'Выберите формат файла')
+        return cleaned
 
     def clean_date(self):
         d = self.cleaned_data['date']
